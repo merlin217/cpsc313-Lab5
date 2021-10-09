@@ -29,24 +29,24 @@ whileloop:
     irmovq  1, %rcx         # i = 1
 forloop:
     rrmovq  %r8, %r10       # r10 = nelems
-    subq    %rcx, %r10      # nelems - i
-    jle endloop             # if i >= nelems, end loop
-    irmovq  8, %r10         
-    mulq    %rcx, %r10      # r10 = 8*i
-    addq    %r9, %r10       
-    mrmovq  0(%r10), %r11   # r11 = array[i]
-    mrmovq  -8(%r10), %rdx  # rdx = array[i-1]
-    subq    %r11, %rdx      
-    jle noswap              # if array[i-1] <= array[i], no swap
-    rrmovq  %r10, %rdi      # a = &array[i]
+    subq    %rcx, %r10      # nelems - i                 [3 bub]
+    jle endloop             # if i >= nelems, end loop   [2 bub]
+    irmovq  8, %r10         #                            
+    mulq    %rcx, %r10      # r10 = 8*i                  [3 bub]
+    addq    %r9, %r10       #                            [3 bub]
+    mrmovq  0(%r10), %r11   # r11 = array[i]             [3 bub]
+    mrmovq  -8(%r10), %rdx  # rdx = array[i-1]           
+    subq    %r11, %rdx      #                            [3 bub]
+    jle noswap              # if array[i-1] <= array[i], no swap   [2 bub]
+    irmovq  8, %rdx         
+    rrmovq  %r10, %rdi      # a = &array[i]              
     rrmovq  %r10, %rsi      
-    irmovq  8, %rdx 
-    subq    %rdx, %rsi      # b = &array[i-1]
-    call    swap            # swap(a, b)
-    irmovq  1, %r10         
-    addq    %r10, %rax      # nswaps++ 
+    subq    %rdx, %rsi      # b = &array[i-1]            [1 bub]
+    call    swap            # swap(a, b)                 
+    irmovq  1, %r10                                    # [4 bub from ret]
+    addq    %r10, %rax      # nswaps++                 # [3 bub]
 noswap:
-    irmovq  1, %rdx         
+    irmovq  1, %rdx                                 
     addq    %rdx, %rcx      # i++
     jmp forloop
 
