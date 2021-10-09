@@ -5,19 +5,6 @@ main:
     call bsort
     halt
 
-swap:
-    pushq   %r8             # save values in r8, r9 [3 bub from call, %rsp]
-    pushq   %r9             # [3 bub, %rsp]
-    rrmovq  %rdi, %r10      # r10 = a 
-    rrmovq  %rsi, %r11      # r11 = b
-    mrmovq  0(%r10), %r8    # r8 = *a [2 bub]
-    mrmovq  0(%r11), %r9    # r9 = *b
-    rmmovq  %r8, 0(%r11)    # *b = r8 [2 bub]
-    rmmovq  %r9, 0(%r10)    # *a = r9 
-    popq    %r9             
-    popq    %r8             # restore values in r8, r9 [3 bub, %rsp]
-    ret                     # [3 bub, %rsp] -- will cause [4 bub]
-
 bsort:
     pushq   %r8             # save values in r8, r9
     pushq   %r9         
@@ -41,9 +28,21 @@ forloop:
     irmovq  8, %rdx         
     rrmovq  %r10, %rdi      # a = &array[i]              
     rrmovq  %r10, %rsi      
-    subq    %rdx, %rsi      # b = &array[i-1]            [1 bub]
-    call    swap            # swap(a, b)                 
-    irmovq  1, %r10                                    # [4 bub from ret]
+    subq    %rdx, %rsi      # b = &array[i-1]            [3 bub]
+
+    # swap
+    pushq   %r8             # save values in r8, r9
+    pushq   %r9             # [3 bub, %rsp]
+    rrmovq  %rdi, %r10      # r10 = a 
+    rrmovq  %rsi, %r11      # r11 = b
+    mrmovq  0(%r10), %r8    # r8 = *a [2 bub]
+    mrmovq  0(%r11), %r9    # r9 = *b
+    rmmovq  %r8, 0(%r11)    # *b = r8 [2 bub]
+    rmmovq  %r9, 0(%r10)    # *a = r9 
+    popq    %r9             
+    popq    %r8             # restore values in r8, r9 [3 bub, %rsp]
+
+    irmovq  1, %r10
     addq    %r10, %rax      # nswaps++                 # [3 bub]
 noswap:
     irmovq  1, %rdx                                 
