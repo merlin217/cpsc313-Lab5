@@ -26,24 +26,24 @@ forloop:
     subq    %r11, %rdx      #                            [3 bub]
     jle noswap              # if array[i-1] <= array[i], no swap   [2 bub]
     irmovq  8, %rdx         
-    rrmovq  %r10, %rdi      # a = &array[i]              
     rrmovq  %r10, %rsi      
-    subq    %rdx, %rsi      # b = &array[i-1]            [3 bub]
+    rrmovq  %r10, %rdi      # a = &array[i]              
+    subq    %rdx, %rsi      # b = &array[i-1]            [2 bub]
 
     # swap
-    pushq   %r8             # save values in r8, r9
-    pushq   %r9             # [3 bub, %rsp]
+    pushq   %r8             # save value in r8
     rrmovq  %rdi, %r10      # r10 = a 
-    rrmovq  %rsi, %r11      # r11 = b
-    mrmovq  0(%r10), %r8    # r8 = *a [2 bub]
+    rrmovq  %rsi, %r11      # r11 = b                    [1 bub]
+    mrmovq  0(%r10), %r8    # r8 = *a                    [1 bub]
+    pushq   %r9             # save value in r9
     mrmovq  0(%r11), %r9    # r9 = *b
-    rmmovq  %r8, 0(%r11)    # *b = r8 [2 bub]
-    rmmovq  %r9, 0(%r10)    # *a = r9 
-    popq    %r9             
-    popq    %r8             # restore values in r8, r9 [3 bub, %rsp]
+    rmmovq  %r8, 0(%r11)    # *b = r8                    [1 bub]
+    rmmovq  %r9, 0(%r10)    # *a = r9                    [1 bub]
 
+    popq    %r9             # restore r8 from stack
     irmovq  1, %r10
     addq    %r10, %rax      # nswaps++                 # [3 bub]
+    popq    %r8             # restore r9 from stack
 noswap:
     irmovq  1, %rdx                                 
     addq    %rdx, %rcx      # i++
