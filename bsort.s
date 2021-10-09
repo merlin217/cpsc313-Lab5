@@ -6,8 +6,8 @@ main:
     halt
 
 swap:
-    pushq   %r8             # save values in r8, r9
-    pushq   %r9             
+    pushq   %r8             # save values in r8, r9 [3 bub from call, %rsp]
+    pushq   %r9             # [3 bub, %rsp]
     rrmovq  %rdi, %r10      # r10 = a 
     rrmovq  %rsi, %r11      # r11 = b
     mrmovq  0(%r10), %r8    # r8 = *a [2 bub]
@@ -15,8 +15,8 @@ swap:
     rmmovq  %r8, 0(%r11)    # *b = r8 [2 bub]
     rmmovq  %r9, 0(%r10)    # *a = r9 
     popq    %r9             
-    popq    %r8             # restore values in r8, r9
-    ret
+    popq    %r8             # restore values in r8, r9 [3 bub, %rsp]
+    ret                     # [3 bub, %rsp] -- will cause [4 bub]
 
 bsort:
     pushq   %r8             # save values in r8, r9
