@@ -9,11 +9,11 @@ swap:
     pushq   %r8             # save values in r8, r9
     pushq   %r9             
     rrmovq  %rdi, %r10      # r10 = a 
-    mrmovq  0(%r10), %r8    # r8 = *a
     rrmovq  %rsi, %r11      # r11 = b
+    mrmovq  0(%r10), %r8    # r8 = *a [2 bub]
     mrmovq  0(%r11), %r9    # r9 = *b
-    rmmovq  %r9, 0(%r10)    # *a = r9
-    rmmovq  %r8, 0(%r11)    # *b = r8
+    rmmovq  %r8, 0(%r11)    # *b = r8 [2 bub]
+    rmmovq  %r9, 0(%r10)    # *a = r9 
     popq    %r9             
     popq    %r8             # restore values in r8, r9
     ret
@@ -49,6 +49,8 @@ noswap:
     irmovq  1, %rdx         
     addq    %rdx, %rcx      # i++
     jmp forloop
+
+
 
 endloop:
     andq    %rax, %rax      
