@@ -6,8 +6,8 @@ main:
     halt
 
 bsort:
-    pushq   %r8             # save values in r8, r9
-    pushq   %r9         
+    pushq   %r8             # save values in r8, r9      [3 bub from call]
+    pushq   %r9             #                            [3 bub]
     rrmovq  %rdi, %r8       # r8 = nelems
     rrmovq  %rsi, %r9       # r9 = &array
 
