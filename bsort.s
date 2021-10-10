@@ -40,23 +40,23 @@ forloop:
     rmmovq  %r8, 0(%r11)    # *b = r8                    [1 bub]
     rmmovq  %r9, 0(%r10)    # *a = r9                    [1 bub]
 
-    popq    %r9             # restore r8 from stack
     irmovq  1, %r10
-    addq    %r10, %rax      # nswaps++                 # [3 bub]
+    popq    %r9             # restore r8 from stack
+    addq    %r10, %rax      # nswaps++                 # [2 bub]
     popq    %r8             # restore r9 from stack
 noswap:
     irmovq  1, %rdx                                 
-    addq    %rdx, %rcx      # i++
+    addq    %rdx, %rcx      # i++                        [3 bub]
     jmp forloop
 
 
 
 endloop:
     andq    %rax, %rax      
-    jne whileloop           # if nswaps != 0, jump
+    jne whileloop           # if nswaps != 0, jump      [2 bub]
 
     popq    %r9
-    popq    %r8             # restore values in r8, r9
+    popq    %r8             # restore values in r8, r9  [3 bub]
     ret
 
 .pos 0x1000
