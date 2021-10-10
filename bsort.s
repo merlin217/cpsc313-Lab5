@@ -19,7 +19,7 @@ forloop:
     subq    %rcx, %r10      # nelems - i                 [3 bub]
     irmovq  8, %r10         #
     jle endloop             # if i >= nelems, end loop   [2 bub]
-    mulq    %rcx, %r10      # r10 = 8*i                  [1 bub]
+    mulq    %rcx, %r10      # r10 = 8*i
     addq    %r9, %r10       #                            [3 bub]
     mrmovq  0(%r10), %r11   # r11 = array[i]             [3 bub]
     mrmovq  -8(%r10), %rdx  # rdx = array[i-1]           
